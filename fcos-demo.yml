@@ -1,0 +1,28 @@
+variant: fcos
+version: 1.0.0
+passwd:
+  users:
+    - name: core
+      ssh_authorized_keys:
+        - ecdsa-sha2-nistp521 AAAAE2VjZHNhLXNoYTItbmlzdHA1MjEAAAAIbmlzdHA1MjEAAACFBACq1GMxxOJIgn+XZc1gvkCBB3hBL0s1ewFaKOJJEaqm/WkYzSoZpGaQK0QuyF7wn0pMTVM7nU9aHXY/94TTcu4U+gAjTuIm1uJgAyUJY+WA/hoRMruYODeeghV8KcT+ttP7mHW8RlsJdjGlrNNBnKQ/FT7X1nxU5Lxv4/bEYujiyQcHkg==
+
+systemd:
+  units:
+    - name: pihole.service
+      enabled: true
+      contents: |
+        [Unit]
+        Description=A PiHole DNS Ad Blocker
+        After=network-online.target
+        Wants=network-online.target
+        [Service]
+        Type=forking
+        KillMode=none
+        Restart=on-failure
+        RemainAfterExit=yes
+        ExecStartPre=podman pull docker.io/pihole/pihole
+        ExecStart=podman run -d --name pihole -p 53:53/UDP -p 53:53 -p 80:80 -e TZ="Australia/Melbourne" -v "$(pwd)/etc-pihole/:/etc/pihole" -v "$(pwd)/etc-dnsmasq.d/:/etc/dnsmasq.d/" --dns=127.0.0.1 --dns=1.1.1.1 -e ServerIP="127.0.0.1" -e WEBPASSWORD="abc123" -e INTERFACE="eth0" docker.io/pihole/pihole
+        ExecStop=podman stop -t 10 pihole
+        ExecStopPost=podman rm pihole
+        [Install]
+        WantedBy=multi-user.target
