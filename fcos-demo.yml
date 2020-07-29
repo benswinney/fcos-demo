@@ -8,11 +8,11 @@ passwd:
 
 systemd:
   units:
-    - name: pihole.service
+    - name: fcosdemo.service
       enabled: true
       contents: |
         [Unit]
-        Description=A PiHole DNS Ad Blocker
+        Description=A Webserver to use for a Fedora CoreOS Demo
         After=network-online.target
         Wants=network-online.target
         [Service]
@@ -20,9 +20,9 @@ systemd:
         KillMode=none
         Restart=on-failure
         RemainAfterExit=yes
-        ExecStartPre=podman pull docker.io/pihole/pihole
-        ExecStart=podman run -d --name pihole -p 53:53/UDP -p 53:53 -p 80:80 -e TZ="Australia/Melbourne" -v "$(pwd)/etc-pihole/:/etc/pihole" -v "$(pwd)/etc-dnsmasq.d/:/etc/dnsmasq.d/" --dns=127.0.0.1 --dns=1.1.1.1 -e ServerIP="127.0.0.1" -e WEBPASSWORD="abc123" -e INTERFACE="eth0" docker.io/pihole/pihole
-        ExecStop=podman stop -t 10 pihole
-        ExecStopPost=podman rm pihole
+        ExecStartPre=podman pull docker.io/benswinney/fcos-demo
+        ExecStart=podman run -d --name fcos-demo-server -p 8080:8080 docker.io/benswinney/fcos-demo
+        ExecStop=podman stop -t 10 fcos-demo-server
+        ExecStopPost=podman rm fcos-demo-server
         [Install]
         WantedBy=multi-user.target
