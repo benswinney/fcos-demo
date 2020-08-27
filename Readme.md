@@ -46,9 +46,8 @@ systemd:
 
 This ignition file will start the http server via a service.
 
-
 ```shell
-fcct -input fcos-demo.yaml -output fcos-demo.ign
+$ fcct --strict fcos-demo.yaml --output fcos-demo.ign
 ```
 
 ### Boot Fedora CoreOS with Ignition file
