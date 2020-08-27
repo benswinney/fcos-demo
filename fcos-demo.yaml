@@ -4,7 +4,7 @@ passwd:
   users:
     - name: core
       ssh_authorized_keys:
-        - ecdsa-sha2-nistp521 AAA.........
+        - <INSERT SSH KEY HERE>
 
 systemd:
   units:
